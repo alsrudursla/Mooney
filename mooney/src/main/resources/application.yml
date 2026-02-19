@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  #DB
+  datasource:
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  #JPA
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+
+  #KAFKA
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER1},${KAFKA_BOOTSTRAP_SERVER2},${KAFKA_BOOTSTRAP_SERVER3}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "org.example.dto"
+      group-id: mooney-offer-group
+      auto-offset-reset: latest
+    template:
+      default-topic: order-request
+
+logging.level:
+  org.hibernate.SQL: debug
+
+kis:
+  appkey: ${KIS_APP_KEY}
+  secret: ${KIS_SECRET_KEY}
+  approval-url: https://openapi.koreainvestment.com:9443/oauth2/Approval
+  websocket-url: ws://ops.koreainvestment.com:21000/tryitout/H0NXCNT0
