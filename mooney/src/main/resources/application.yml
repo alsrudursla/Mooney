@@ -40,3 +40,6 @@ kis:
   secret: ${KIS_SECRET_KEY}
   approval-url: https://openapi.koreainvestment.com:9443/oauth2/Approval
   websocket-url: ws://ops.koreainvestment.com:21000/tryitout/H0NXCNT0
+
+websocket:
+  enabled: ${WEBSOCKET_ENABLED:false} # 기본 비활성화, 필요한 환경에서만 활성화

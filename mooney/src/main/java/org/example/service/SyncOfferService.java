@@ -1,38 +1,35 @@
 package org.example.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 import org.example.dto.OfferDto;
 import org.example.entity.Account;
 import org.example.entity.Offer;
 import org.example.entity.Stock;
 import org.example.entity.User;
-import org.example.repository.*;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.example.repository.AccountRepository;
+import org.example.repository.OfferRepository;
+import org.example.repository.StockRepository;
+import org.example.repository.TradeRepository;
+import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class OfferKafkaConsumer {
-
+public class SyncOfferService {
     private final StockRepository stockRepository;
-    private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final OfferRepository offerRepository;
     private final TradeRepository tradeRepository;
 
     @Transactional
-    @KafkaListener(topics = "order-request", groupId = "mooney-offer-group")
     public void saveOffer(OfferDto dto) {
-        log.info("📤 메세지 수신 : {} {} {} {}", 
-                dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
-
+        // 기존 리스너에 있던 로직 그대로!
+        // Stock, Account 데이터 조회
         Stock stock = Optional.ofNullable(stockRepository.findByStockCode(dto.getStockCode()))
                 .orElseThrow(() -> new IllegalArgumentException("Stock with code " + dto.getStockCode() + " not found."));
 
