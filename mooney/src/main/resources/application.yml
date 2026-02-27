@@ -42,4 +42,4 @@ kis:
   websocket-url: ws://ops.koreainvestment.com:21000/tryitout/H0NXCNT0
 
 websocket:
-  enabled: true # 웹소켓 클라이언트 활성화 여부 (테스트 시 false로 설정)
+  enabled: ${WEBSOCKET_ENABLED:false} # 기본 비활성화, 필요한 환경에서만 활성화
