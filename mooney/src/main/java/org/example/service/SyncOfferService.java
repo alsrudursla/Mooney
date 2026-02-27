@@ -37,7 +37,7 @@ public class SyncOfferService {
         Optional<User> userOptional = userRepository.findById(1L);
         User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User with ID 1L not found."));
         
-        Account account = Optional.ofNullable(accountRepository.findByUser(userOptional))
+        Account account = Optional.ofNullable(accountRepository.findByUser(user))
                 .orElseThrow(() -> new IllegalStateException("Account for user ID 1L not found."));
 
         // 1. 주문 테이블에 저장
