@@ -30,9 +30,15 @@ public class SyncOfferService {
     public void saveOffer(OfferDto dto) {
         // 기존 리스너에 있던 로직 그대로!
         // Stock, Account 데이터 조회
-        Stock stock = stockRepository.findByStockCode(dto.getStockCode());
-        Optional<User> user = userRepository.findById(1L); // 나중에 인증 정보로 변경 가능
-        Account account = accountRepository.findByUser(user);
+        Stock stock = Optional.ofNullable(stockRepository.findByStockCode(dto.getStockCode()))
+                .orElseThrow(() -> new IllegalArgumentException("Stock with code " + dto.getStockCode() + " not found."));
+
+        // TODO: [SECURITY] 테스트 목적으로만 사용되며, 프로덕션에서는 실제 인증된 사용자 ID로 대체해야 합니다.
+        Optional<User> userOptional = userRepository.findById(1L);
+        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User with ID 1L not found."));
+        
+        Account account = Optional.ofNullable(accountRepository.findByUser(userOptional))
+                .orElseThrow(() -> new IllegalStateException("Account for user ID 1L not found."));
 
         // 1. 주문 테이블에 저장
         Offer offer = dto.toEntity(dto, stock, account);
