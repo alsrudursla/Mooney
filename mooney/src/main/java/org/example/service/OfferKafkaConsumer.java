@@ -30,7 +30,7 @@ public class OfferKafkaConsumer {
     @Transactional
     @KafkaListener(topics = "order-request", groupId = "mooney-offer-group")
     public void saveOffer(OfferDto dto) {
-        log.info("📤 메세지 발행 : {} {} {} {}", 
+        log.info("📤 메세지 수신 : {} {} {} {}", 
                 dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
 
         Stock stock = Optional.ofNullable(stockRepository.findByStockCode(dto.getStockCode()))
