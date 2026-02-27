@@ -7,11 +7,11 @@ export const options = {
   scenarios: {
     rps_test: {
       executor: 'constant-arrival-rate', // 일정한 RPS 유지
-      rate: 40, // 초당 RPS
+      rate: 30, // 초당 RPS
       timeUnit: '1s', // RPS 측정 단위 (ex. 1초당 요청 수)
       duration: '2m', // 테스트 지속 시간 (2분)
-      preAllocatedVUs: 800, // 미리 확보해 둘 가상 사용자 수 (필요 VU ≈ RPS × 평균 응답시간(초)) // 40 × 18 ≈ 720 → 여유 포함
-      maxVUs: 1000, // 최대 가상 사용자 수 (preAllocatedVUs에서 부족하면 확장)
+      preAllocatedVUs: 200, // 미리 확보해 둘 가상 사용자 수 (필요 VU ≈ RPS × 평균 응답시간(초)) // 30 × 1 ≈ 30 → 여유 포함
+      maxVUs: 400, // 최대 가상 사용자 수 (preAllocatedVUs에서 부족하면 확장)
     },
   },
 };
@@ -25,7 +25,8 @@ export default () => {
   };
 
   const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-  const res = http.post('http://localhost:8080/offer/sync', payload, { headers });
+  const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080'; // 환경 변수가 설정되지 않은 경우 기본값 사용
+  const res = http.post(`${BASE_URL}/offer/sync`, payload, { headers });
 
   check(res, {
     'Post status is 201': (r) => r.status === 201,
