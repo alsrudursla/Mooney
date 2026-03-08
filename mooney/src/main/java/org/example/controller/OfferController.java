@@ -28,8 +28,8 @@ public class OfferController {
         // DTO의 필드와 폼 input name이 일치하면 자동 매핑
         try {
             kafkaTemplate.send("order-request", dto);
-            log.info("📤 메세지 발행 : {} {} {} {}", 
-                dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
+            //log.info("📤 메세지 발행 : {} {} {} {}", 
+            //    dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
             return ResponseEntity.status(HttpStatus.CREATED).body("주문이 접수되었습니다.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
