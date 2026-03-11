@@ -35,8 +35,8 @@ public class OfferKafkaConsumer {
     @KafkaListener(topics = "order-request", groupId = "mooney-offer-group")
     //@KafkaListener(topics = "order-request", groupId = "mooney-offer-group", concurrency = "3")
     public void saveOffer(OfferDto dto) {
-        //log.info("📤 메세지 수신 : {} {} {} {}", 
-        //        dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
+        log.debug("📤 메세지 수신 : {} {} {} {}", 
+                dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
 
         // 성능 측정 시작
         long startTime = System.nanoTime();
