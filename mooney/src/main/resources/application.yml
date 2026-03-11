@@ -32,8 +32,11 @@ spring:
     template:
       default-topic: order-request
 
-logging.level:
-  org.hibernate.SQL: debug
+logging:
+  file:
+    name: logs/app.log
+  #level:
+  #  org.hibernate.SQL: debug
 
 kis:
   appkey: ${KIS_APP_KEY}

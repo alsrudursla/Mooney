@@ -9,6 +9,7 @@ import org.example.entity.Offer;
 import org.example.entity.Stock;
 import org.example.entity.User;
 import org.example.repository.*;
+import org.example.ConsumerMetrics;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +27,19 @@ public class OfferKafkaConsumer {
     private final UserRepository userRepository;
     private final OfferRepository offerRepository;
     private final TradeRepository tradeRepository;
+    
+    // 성능 측정용 메트릭 클래스 주입
+    private final ConsumerMetrics consumerMetrics;
 
     @Transactional
     @KafkaListener(topics = "order-request", groupId = "mooney-offer-group")
+    //@KafkaListener(topics = "order-request", groupId = "mooney-offer-group", concurrency = "3")
     public void saveOffer(OfferDto dto) {
-        log.info("📤 메세지 수신 : {} {} {} {}", 
+        log.debug("📤 메세지 수신 : {} {} {} {}", 
                 dto.getStockCode(), dto.getOfferPrice(), dto.getOfferCnt(), dto.getOfferSide());
+
+        // 성능 측정 시작
+        long startTime = System.nanoTime();
 
         Stock stock = Optional.ofNullable(stockRepository.findByStockCode(dto.getStockCode()))
                 .orElseThrow(() -> new IllegalArgumentException("Stock with code " + dto.getStockCode() + " not found."));
@@ -49,5 +57,9 @@ public class OfferKafkaConsumer {
 
         // 2. 체결 테이블에 저장 (PENDING 상태)
         tradeRepository.save(dto.addTradeEntity(offer));
+
+        // 성능 측정 종료 및 기록
+        long duration = (System.nanoTime() - startTime) / 1_000_000;
+        consumerMetrics.record(duration);
     }
 }
