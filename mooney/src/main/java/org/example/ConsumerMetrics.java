@@ -18,16 +18,16 @@ public class ConsumerMetrics {
 
         totalTime.addAndGet(duration);
         
-        long currentTime = count.incrementAndGet();
+        long currentCount = count.incrementAndGet();
 
         maxTime.updateAndGet(v -> Math.max(v, duration));
         minTime.updateAndGet(v -> Math.min(v, duration));
 
-        if (currentTime % 1000 == 0) {
+        if (currentCount % 1000 == 0) {
             log.info(
                 "📊 Consumer Stats - count: {}, avg: {} ms, max: {} ms, min: {} ms",
-                currentTime,
-                totalTime.get() / currentTime,
+                currentCount,
+                totalTime.get() / currentCount,
                 maxTime.get(),
                 minTime.get()
             );
