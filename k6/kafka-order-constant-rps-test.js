@@ -9,7 +9,7 @@ export const options = {
       executor: 'constant-arrival-rate', // 일정한 RPS 유지
       rate: 30, // 초당 RPS
       timeUnit: '1s', // RPS 측정 단위 (ex. 1초당 요청 수)
-      duration: '1m', // 테스트 지속 시간 (2분)
+      duration: '2m', // 테스트 지속 시간 (2분)
       preAllocatedVUs: 100, // 미리 확보해 둘 가상 사용자 수 (필요 VU ≈ RPS × 평균 응답시간(초)) // 30 × 1 ≈ 30 → 여유 포함
       maxVUs: 200, // 최대 가상 사용자 수 (preAllocatedVUs에서 부족하면 확장)
     },
