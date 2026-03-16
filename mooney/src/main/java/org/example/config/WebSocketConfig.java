@@ -1,7 +1,8 @@
-package org.example;
+package org.example.config;
 
 import lombok.RequiredArgsConstructor;
 
+import org.example.TradeWebSocketHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.*;
