@@ -1,12 +1,14 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+
+import org.example.dto.OfferDto;
 import org.example.entity.Account;
 import org.example.entity.Offer;
+import org.example.entity.Stock;
 import org.example.entity.Trade;
 import org.example.repository.OfferRepository;
 import org.example.repository.TradeRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +16,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    name = "websocket.enabled", // 1. application.yml에서 'websocket.enabled' 속성을 찾는다.
-    havingValue = "true", // 2. 그 값이 "true"일 때만 이 클래스를 활성화한다.
-    matchIfMissing = false // 3. 만약 속성이 없으면 (or 기본값) 비활성화한다.
-)
 public class OfferService {
     private final OfferRepository offerRepository;
     private final TradeRepository tradeRepository;
+
+    // 주문 테이블에 저장
+    @Transactional
+    public Offer createOffer(OfferDto dto, Stock stock, Account account) {
+        Offer offer = dto.toEntity(dto, stock, account);
+        return offerRepository.save(offer);
+    }
 
     // PENDING 중인 주문의 stockCode 조회
     @Transactional(readOnly = true)
@@ -29,7 +33,7 @@ public class OfferService {
         return offerRepository.findDistinctStockCodesByOfferStatus("PENDING");
     }
 
-    // 호가랑 체결가가 매칭하는지 확인
+    // 호가랑 주문가가 매칭하는지 확인
     @Transactional
     public void matchOrders(String stockCode, double currentPrice) {
         List<Offer> pendingOffers = offerRepository.findByStock_StockCodeAndOfferStatus(stockCode, "PENDING");
