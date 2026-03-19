@@ -86,13 +86,13 @@ public class ConsumerMetrics {
         double avgBatch = (double) totalTime.get() / count.get();
 
         // 메세지당 평균 시간 (총 시간 / 총 메세지 수)
-        double avgMessage = (double) totalTime.get() / totalMessageCount.get();
+        double avgMessage = totalMessageCount.get() > 0 ? (double) totalTime.get() / totalMessageCount.get() : 0;
 
         // 초당 처리량
-        double throughput = (double) totalMessageCount.get() / (totalTime.get() / 1000.0);
+        double throughput = totalTime.get() > 0 ? (double) totalMessageCount.get() / (totalTime.get() / 1000.0) : 0;
 
         // 메세지당 평균 DB 시간 (총 DB 시간 / 총 메세지 수)
-        double avgDBTime = (double) totalDBTime.get() / dbCount.get();
+        double avgDBTime = dbCount.get() > 0 ? (double) totalDBTime.get() / dbCount.get() : 0;
 
         log.info(
             "--- FINAL PROCESSING STATS ---" +
