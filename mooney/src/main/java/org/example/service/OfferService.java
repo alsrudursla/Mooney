@@ -28,7 +28,6 @@ public class OfferService {
     }
 
     // 주문 테이블에 저장 (배치용)
-    @Transactional
     public Offer createOffer4Batch(OfferDto dto, Stock stock, Account account) {
         Offer offer = dto.toEntity(dto, stock, account);
         return offer;

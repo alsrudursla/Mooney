@@ -6,8 +6,8 @@ import org.example.entity.Offer;
 import org.example.entity.Trade;
 import org.example.repository.TradeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +27,6 @@ public class TradeService {
     }
 
     // 거래 테이블에 저장 (배치용)
-    @Transactional
     public Trade createTrade4Batch(Offer offer) {
         Trade trade = Trade.builder()
                 .offer(offer)
