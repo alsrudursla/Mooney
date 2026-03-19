@@ -15,6 +15,11 @@ spring:
       hibernate:
         hbm2ddl:
           auto: update
+      #Batch
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
 
   #KAFKA
   kafka:
@@ -29,13 +34,20 @@ spring:
         spring.json.trusted.packages: "org.example.dto"
       group-id: mooney-offer-group
       auto-offset-reset: latest
+      #Batch
+      max-poll-records: 100
+      fetch-max-wait: 3s
+    listener:
+      type: batch
+      ack-mode: batch
     template:
       default-topic: order-request
 
 logging:
   file:
     name: logs/app.log
-  #level:
+  level:
+    org.hibernate.engine.jdbc.batch.internal: debug
   #  org.hibernate.SQL: debug
 
 kis:
