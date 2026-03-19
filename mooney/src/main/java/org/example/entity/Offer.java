@@ -10,7 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Offer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "offer_seq_gen", sequenceName = "offer_seq", allocationSize = 100)
     private Long offerId;
 
     private double offerPrice;

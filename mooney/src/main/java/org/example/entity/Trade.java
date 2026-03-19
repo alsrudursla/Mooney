@@ -10,7 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Trade {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "trade_seq_gen", sequenceName = "trade_seq", allocationSize = 100)
     private Long tradeId;
 
     @OneToOne(fetch = FetchType.LAZY)

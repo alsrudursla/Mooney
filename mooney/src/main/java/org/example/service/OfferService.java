@@ -27,6 +27,19 @@ public class OfferService {
         return offerRepository.save(offer);
     }
 
+    // 주문 테이블에 저장 (배치용)
+    @Transactional
+    public Offer createOffer4Batch(OfferDto dto, Stock stock, Account account) {
+        Offer offer = dto.toEntity(dto, stock, account);
+        return offer;
+    }
+
+    // 주문 테이블에 한 번에 저장
+    @Transactional
+    public void saveAll(List<Offer> offers) {
+        offerRepository.saveAll(offers);
+    }
+
     // PENDING 중인 주문의 stockCode 조회
     @Transactional(readOnly = true)
     public List<String> getPendingStockCodes() {
