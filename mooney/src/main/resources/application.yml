@@ -44,8 +44,8 @@ spring:
       default-topic: order-request
 
 logging:
-  file:
-    name: logs/app.log
+  #file:
+  #  name: logs/app.log
   level:
     org.hibernate.engine.jdbc.batch.internal: debug
   #  org.hibernate.SQL: debug
