@@ -162,6 +162,6 @@ public class LogAnalyzer {
                 """.formatted(timestamp, prevFileName, currFileName, report);
 
         Files.writeString(reportPath, content);
-        System.out.println("\\n리포트가 저장되었습니다: " + reportPath);
+        System.out.println("\n리포트가 저장되었습니다: " + reportPath);
     }
 }
