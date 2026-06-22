@@ -1,3 +1,5 @@
+package org.example.scripts;
+
 import java.io.*;
 import java.net.URI;
 import java.net.http.*;
@@ -6,12 +8,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Stream;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.gemini.*;
 
 public class LogAnalyzer {
     public static void main(String[] args) throws Exception {
         // 1. .env 파일 읽기
         Properties props = new Properties();
-        try (InputStream input = new FileInputStream("scripts/.env")) {
+        try (InputStream input = new FileInputStream("mooney\\src\\main\\java\\org\\example\\scripts\\.env")) {
             props.load(input);
         } catch (IOException e) {
             System.out.println("환경 변수 파일(.env)을 읽는 중 오류 발생: " + e.getMessage());
@@ -124,23 +128,22 @@ public class LogAnalyzer {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String responseBody = response.body();
-
-        int start = responseBody.indexOf("\"text\": \"") + 9;
-        int end = responseBody.indexOf("\"\n          }\n        ]");
-
-        if (start == 8 || end == -1) {
-            return "응답 파싱 실패: " + responseBody;
-        }
         
-        return responseBody.substring(start, end)
-                .replace("\\n", "\n")
-                .replace("\\\"", "\"")
-                .replace("\\u003e", ">")
-                .replace("\\u003c", "<");
+        ObjectMapper mapper = new ObjectMapper();
+        GeminiResponse geminiResponse = mapper.readValue(responseBody, GeminiResponse.class);
+
+        return geminiResponse.candidates().get(0)
+            .content()
+            .parts().get(0)
+            .text()
+            .replace("\\n", "\n")
+            .replace("\\\"", "\"")
+            .replace("\\u003e", ">")
+            .replace("\\u003c", "<");
     }
 
     private static void saveReport(String report, String prevFileName, String currFileName) throws IOException {
-        Path reportsDir = Path.of("scripts/reports");
+        Path reportsDir = Path.of("mooney\\src\\main\\java\\org\\example\\scripts\\reports");
         if (!Files.exists(reportsDir)) {
             Files.createDirectories(reportsDir);
         }
