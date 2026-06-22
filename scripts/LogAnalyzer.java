@@ -10,7 +10,13 @@ public class LogAnalyzer {
     public static void main(String[] args) throws Exception {
         // 1. .env 파일 읽기
         Properties props = new Properties();
-        props.load(new FileInputStream("scripts/.env"));
+        try (InputStream input = new FileInputStream("scripts/.env")) {
+            props.load(input);
+        } catch (IOException e) {
+            System.out.println("환경 변수 파일(.env)을 읽는 중 오류 발생: " + e.getMessage());
+            return;
+        }
+        
         String apiKey = props.getProperty("GEMINI_API_KEY");
         String url = props.getProperty("GEMINI_API_URL") + "?key=" + apiKey;
 
