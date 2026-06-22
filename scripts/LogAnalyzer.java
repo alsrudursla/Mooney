@@ -5,6 +5,7 @@ import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class LogAnalyzer {
     public static void main(String[] args) throws Exception {
@@ -16,7 +17,7 @@ public class LogAnalyzer {
             System.out.println("환경 변수 파일(.env)을 읽는 중 오류 발생: " + e.getMessage());
             return;
         }
-        
+
         String apiKey = props.getProperty("GEMINI_API_KEY");
         String url = props.getProperty("GEMINI_API_URL") + "?key=" + apiKey;
 
@@ -63,19 +64,29 @@ public class LogAnalyzer {
     }
 
     private static String extractStats(Path logFile) throws IOException {
-        List<String> lines = Files.readAllLines(logFile);
         StringBuilder stats = new StringBuilder();
         boolean capturing = false;
 
-        for (String line : lines) {
-            if (line.contains("FINAL PROCESSING STATS")) {
-                capturing = true;
+        try (Stream<String> lines = Files.lines(logFile)) {
+            Iterator<String> it = lines.iterator();
+
+            while (it.hasNext()) {
+                String line = it.next();
+
+                if (line.contains("FINAL PROCESSING STATS")) {
+                    capturing = true;
+                }
+
+                if (capturing) {
+                    stats.append(line).append("\n");
+                }
+
+                if (capturing && line.contains("Avg DB Time Per Message")) {
+                    break;
+                }
             }
-            if (capturing) {
-                stats.append(line).append("\n");
-            }
-            if (capturing && line.contains("Avg DB Time Per Message")) break;
         }
+
         return stats.toString();
     }
 
