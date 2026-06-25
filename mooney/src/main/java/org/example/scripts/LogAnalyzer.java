@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.http.*;
 import java.nio.file.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -119,15 +120,21 @@ public class LogAnalyzer {
                 }
                 """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
 
-        HttpClient client = HttpClient.newHttpClient();
+        HttpClient client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(60))
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(body))
             .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String responseBody = response.body();
+        if (response.statusCode() / 100 != 2) {
+            return "Gemini API 호출 실패 (status=" + response.statusCode() + "): " + response.body();
+        }
         
         ObjectMapper mapper = new ObjectMapper();
         GeminiResponse geminiResponse = mapper.readValue(responseBody, GeminiResponse.class);
