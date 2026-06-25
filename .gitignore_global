@@ -3,3 +3,9 @@
 # Log files
 logs/
 *.log
+
+# Environment variables
+.env
+
+# Reports
+reports/
